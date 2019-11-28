@@ -4,6 +4,11 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\RelationNotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class Handler extends ExceptionHandler
 {
@@ -46,6 +51,21 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof RelationNotFoundException) {
+            return response()->json([
+                'errors' => 'no relation ship with'
+            ],Response::HTTP_NOT_FOUND);
+        }
+        if ($exception instanceof ModelNotFoundException) {
+            return response()->json([
+                'errors' => 'not found'
+            ],Response::HTTP_NOT_FOUND);
+        }
+        if ($exception instanceof NotFoundHttpException) {
+            return response()->json([
+                'errors' => 'Incorect route'
+            ],Response::HTTP_NOT_FOUND);
+        }
         return parent::render($request, $exception);
     }
 }

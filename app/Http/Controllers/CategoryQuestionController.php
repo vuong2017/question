@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Model\CategoryQuestion;
 use Illuminate\Http\Request;
+use App\Http\Resources\CategoryQuestionResource as Category;
+use App\Http\Requests\CategoryQuestion\CategoryQuestionRequest;
 
 class CategoryQuestionController extends Controller
 {
@@ -12,9 +14,15 @@ class CategoryQuestionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $withParams = [];
+        if($request->with) {
+            $withParams = explode(",", $request->with);
+        }
+        return Category::collection(
+            CategoryQuestion::with($withParams)->paginate(10)
+        );
     }
 
     /**
@@ -22,9 +30,9 @@ class CategoryQuestionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(CategoryQuestionRequest $request)
     {
-        //
+        
     }
 
     /**
@@ -33,9 +41,11 @@ class CategoryQuestionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryQuestionRequest $request)
     {
-        //
+        $categoryQuestion = new CategoryQuestion($request->all());
+        $categoryQuestion->save();
+        return new Category($categoryQuestion);
     }
 
     /**
@@ -46,7 +56,7 @@ class CategoryQuestionController extends Controller
      */
     public function show(CategoryQuestion $categoryQuestion)
     {
-        //
+        return new Category($categoryQuestion);
     }
 
     /**
@@ -67,9 +77,10 @@ class CategoryQuestionController extends Controller
      * @param  \App\Model\CategoryQuestion  $categoryQuestion
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CategoryQuestion $categoryQuestion)
+    public function update(CategoryQuestionRequest $request, CategoryQuestion $categoryQuestion)
     {
-        //
+        $categoryQuestion->update($request->all());    
+        return new Category($categoryQuestion);
     }
 
     /**
@@ -80,6 +91,7 @@ class CategoryQuestionController extends Controller
      */
     public function destroy(CategoryQuestion $categoryQuestion)
     {
-        //
+        $categoryQuestion->delete();
+        return new Category($categoryQuestion);
     }
 }
