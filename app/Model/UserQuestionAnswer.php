@@ -17,16 +17,16 @@ class UserQuestionAnswer extends Model
 
     public function choise()
     {
-        return $this->belongsTo(QuestionChoices::class);
+        return $this->belongsTo(QuestionChoices::class, 'choise_id');
     }
 
     public function question()
     {
-        return $this->belongsTo(Question::class);
+        return $this->belongsTo(Question::class, 'question_id');
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

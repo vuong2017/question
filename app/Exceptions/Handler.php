@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\RelationNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 
 class Handler extends ExceptionHandler
@@ -51,6 +52,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof RouteNotFoundException) {
+            return response()->json([
+                'errors' => 'authenticated'
+            ],Response::HTTP_UNAUTHORIZED);
+        }
         if ($exception instanceof RelationNotFoundException) {
             return response()->json([
                 'errors' => 'no relation ship with'

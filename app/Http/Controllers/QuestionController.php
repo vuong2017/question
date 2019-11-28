@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Model\Question;
 use Illuminate\Http\Request;
+use App\Http\Resources\QuestionResource;
+use App\Http\Requests\Question\QuestionRequest;
+
 
 class QuestionController extends Controller
 {
@@ -12,9 +15,15 @@ class QuestionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $withParams = [];
+        if ($request->with) {
+            $withParams = explode(",", $request->with);
+        }
+        return new QuestionResource(
+            Question::with($withParams)->paginate(10)
+        );
     }
 
     /**
@@ -33,9 +42,12 @@ class QuestionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(QuestionRequest $request)
     {
-        //
+        $request['is_active'] = true;
+        $question = new Question($request->all());
+        $question->save();
+        return new QuestionResource($question);
     }
 
     /**
@@ -46,7 +58,7 @@ class QuestionController extends Controller
      */
     public function show(Question $question)
     {
-        //
+        return new QuestionResource($question);
     }
 
     /**
@@ -67,9 +79,10 @@ class QuestionController extends Controller
      * @param  \App\Model\Question  $question
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Question $question)
+    public function update(QuestionRequest $request, Question $question)
     {
-        //
+        $question->update($request->all());
+        return new QuestionResource($question);
     }
 
     /**
@@ -80,6 +93,7 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question)
     {
-        //
+        $question->delete();
+        return new QuestionResource($question);
     }
 }

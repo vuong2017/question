@@ -14,7 +14,7 @@ class Question extends Model
     ];
 
     public function category() {
-        return $this->belongsTo(CategoryQuestion::class);
+        return $this->belongsTo(CategoryQuestion::class, 'category_question_id');
     }
 
     public function choices() {
