@@ -17,8 +17,12 @@ use Illuminate\Http\Request;
 Route::middleware(['auth:api'])->group(function () {
     // Category question
     Route::apiResource('category-question', 'CategoryQuestionController');
-    // question
+    // Question
     Route::apiResource('question', 'QuestionController');
+    Route::group(['prefix' => 'question'], function() {
+    // Choices
+        Route::apiResource('/{question}/choices', 'QuestionChoicesController');
+    });
 });
 
 Route::prefix('auth')->group(function () {

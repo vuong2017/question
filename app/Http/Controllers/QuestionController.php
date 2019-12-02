@@ -21,9 +21,10 @@ class QuestionController extends Controller
         if ($request->with) {
             $withParams = explode(",", $request->with);
         }
-        return new QuestionResource(
-            Question::with($withParams)->paginate(10)
-        );
+        // return new QuestionResource(
+        //     Question::with($withParams)->paginate(10)
+        // );
+        return Question::take(5)->get();
     }
 
     /**
@@ -44,7 +45,6 @@ class QuestionController extends Controller
      */
     public function store(QuestionRequest $request)
     {
-        $request['is_active'] = true;
         $question = new Question($request->all());
         $question->save();
         return new QuestionResource($question);

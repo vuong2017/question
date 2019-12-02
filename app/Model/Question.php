@@ -9,6 +9,11 @@ use App\Model\QuestionChoices;
 
 class Question extends Model
 {
+
+    protected $attributes = [
+        'is_active' => true
+    ];
+
     protected $fillable = [
         'id', 'category_question_id', 'question', 'is_active'
     ];

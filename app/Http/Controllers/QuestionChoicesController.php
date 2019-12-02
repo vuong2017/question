@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Model\QuestionChoices;
+use App\Model\Question;
+
+use App\Http\Requests\Question\QuestionChoicesRequest;
+use App\Http\Resources\QuestionChoicesResource;
+
 use Illuminate\Http\Request;
 
 class QuestionChoicesController extends Controller
@@ -12,9 +17,11 @@ class QuestionChoicesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, Question $question)
     {
-        //
+        return QuestionChoicesResource::collection(
+            $question->choices()->get()
+        );
     }
 
     /**
@@ -33,9 +40,11 @@ class QuestionChoicesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(QuestionChoicesRequest $request, Question $question)
     {
-        //
+        $choices = new QuestionChoices($request->all());
+        $question->choices()->save($choices);
+        return new QuestionChoicesResource($choices);
     }
 
     /**
@@ -67,9 +76,10 @@ class QuestionChoicesController extends Controller
      * @param  \App\Model\QuestionChoices  $questionChoices
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, QuestionChoices $questionChoices)
+    public function update(QuestionChoicesRequest $request, Question $question, QuestionChoices $questionChoices)
     {
-        //
+        $questionChoices->update($request->all());
+        return new QuestionChoicesResource($questionChoices);
     }
 
     /**
