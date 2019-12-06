@@ -21,6 +21,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::apiResource('question', 'QuestionController');
     Route::apiResource('question-choice', 'QuestionChoicesController');
     Route::apiResource('user-question-answer', 'UserQuestionAnswerController');
+    Route::apiResource('question-daily', 'QuestionDailyController');
 });
 
 Route::prefix('auth')->group(function () {
