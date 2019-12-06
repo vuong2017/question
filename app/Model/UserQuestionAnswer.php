@@ -11,13 +11,13 @@ use App\User;
 class UserQuestionAnswer extends Model
 {
     protected $fillable = [
-        'id', 'user_id' ,'question_id', 'choise_id' 
+        'id', 'user_id' ,'question_id', 'choices_id' 
     ];
 
 
-    public function choise()
+    public function choice()
     {
-        return $this->belongsTo(QuestionChoices::class, 'choise_id');
+        return $this->belongsTo(QuestionChoices::class, 'choices_id');
     }
 
     public function question()

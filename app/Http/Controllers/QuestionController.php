@@ -21,10 +21,9 @@ class QuestionController extends Controller
         if ($request->with) {
             $withParams = explode(",", $request->with);
         }
-        // return new QuestionResource(
-        //     Question::with($withParams)->paginate(10)
-        // );
-        return Question::take(5)->get();
+        return new QuestionResource(
+            Question::with($withParams)->paginate(10)
+        );
     }
 
     /**

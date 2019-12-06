@@ -3,24 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Model\QuestionChoices;
-use App\Model\Question;
 
 use App\Http\Requests\Question\QuestionChoicesRequest;
 use App\Http\Resources\QuestionChoicesResource;
 
 use Illuminate\Http\Request;
 
-class QuestionChoicesController extends Controller
+class QuestionChoicesController  extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Question $question)
+    public function index(Request $request, QuestionChoices $QuestionChoices)
     {
-        return QuestionChoicesResource::collection(
-            $question->choices()->get()
+        $with = [];
+        if ($request->with) {
+            $with = explode(",", $request->with);
+        }
+        return new QuestionChoicesResource(
+            QuestionChoices::with($with)->paginate(10)
         );
     }
 
@@ -40,31 +43,33 @@ class QuestionChoicesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(QuestionChoicesRequest $request, Question $question)
+    public function store(QuestionChoicesRequest $request)
     {
-        $choices = new QuestionChoices($request->all());
-        $question->choices()->save($choices);
-        return new QuestionChoicesResource($choices);
+        $questionChoice = new QuestionChoices($request->all());
+        $questionChoice->save();
+        return new QuestionChoicesResource($questionChoice);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Model\QuestionChoices  $questionChoices
+     * @param  \App\Model\QuestionChoices  $questionChoice
      * @return \Illuminate\Http\Response
      */
-    public function show(QuestionChoices $questionChoices)
+    public function show(QuestionChoices $questionChoice)
     {
-        //
+        return new QuestionChoicesResource(
+            $questionChoice
+        );
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Model\QuestionChoices  $questionChoices
+     * @param  \App\Model\QuestionChoices  $questionChoice
      * @return \Illuminate\Http\Response
      */
-    public function edit(QuestionChoices $questionChoices)
+    public function edit(QuestionChoices $questionChoice)
     {
         //
     }
@@ -73,23 +78,24 @@ class QuestionChoicesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Model\QuestionChoices  $questionChoices
+     * @param  \App\Model\QuestionChoices  $questionChoice
      * @return \Illuminate\Http\Response
      */
-    public function update(QuestionChoicesRequest $request, Question $question, QuestionChoices $questionChoices)
+    public function update(QuestionChoicesRequest $request, QuestionChoices $questionChoice)
     {
-        $questionChoices->update($request->all());
-        return new QuestionChoicesResource($questionChoices);
+        $questionChoice->update($request->all());
+        return new QuestionChoicesResource($questionChoice);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Model\QuestionChoices  $questionChoices
+     * @param  \App\Model\QuestionChoices  $questionChoice
      * @return \Illuminate\Http\Response
      */
-    public function destroy(QuestionChoices $questionChoices)
+    public function destroy(QuestionChoices $questionChoice)
     {
-        //
+        $questionChoice->delete();
+        return new QuestionChoicesResource($questionChoice);
     }
 }

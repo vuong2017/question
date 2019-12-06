@@ -19,10 +19,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::apiResource('category-question', 'CategoryQuestionController');
     // Question
     Route::apiResource('question', 'QuestionController');
-    Route::group(['prefix' => 'question'], function() {
-    // Choices
-        Route::apiResource('/{question}/choices', 'QuestionChoicesController');
-    });
+    Route::apiResource('question-choice', 'QuestionChoicesController');
+    Route::apiResource('user-question-answer', 'UserQuestionAnswerController');
 });
 
 Route::prefix('auth')->group(function () {

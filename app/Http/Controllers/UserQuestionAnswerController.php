@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Model\UserQuestionAnswer;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserQuestionAnswerResource;
+use App\Http\Requests\User\UserQuestionAnswerRequest;
 
 class UserQuestionAnswerController extends Controller
 {
@@ -12,9 +14,15 @@ class UserQuestionAnswerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $with = [];
+        if ($request->with) {
+            $with = explode(",", $request->with);
+        }
+        return new UserQuestionAnswerResource(
+            UserQuestionAnswer::with($with)->paginate(10)
+        );
     }
 
     /**
@@ -33,9 +41,11 @@ class UserQuestionAnswerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserQuestionAnswerRequest $request)
     {
-        //
+        $userQuestionAnswer = new UserQuestionAnswer($request->all());
+        $userQuestionAnswer->save();
+        return new UserQuestionAnswerResource($userQuestionAnswer);
     }
 
     /**
@@ -44,9 +54,9 @@ class UserQuestionAnswerController extends Controller
      * @param  \App\Model\UserQuestionAnswer  $userQuestionAnswer
      * @return \Illuminate\Http\Response
      */
-    public function show(UserQuestionAnswer $userQuestionAnswer)
+    public function show(UserQuestionAnswerRequest $userQuestionAnswer)
     {
-        //
+        return new UserQuestionAnswerResource($userQuestionAnswer);
     }
 
     /**
@@ -55,7 +65,7 @@ class UserQuestionAnswerController extends Controller
      * @param  \App\Model\UserQuestionAnswer  $userQuestionAnswer
      * @return \Illuminate\Http\Response
      */
-    public function edit(UserQuestionAnswer $userQuestionAnswer)
+    public function edit(Request $userQuestionAnswer)
     {
         //
     }
@@ -67,9 +77,10 @@ class UserQuestionAnswerController extends Controller
      * @param  \App\Model\UserQuestionAnswer  $userQuestionAnswer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, UserQuestionAnswer $userQuestionAnswer)
+    public function update(UserQuestionAnswerRequest $request, UserQuestionAnswer $userQuestionAnswer)
     {
-        //
+        $userQuestionAnswer->update($request->all());
+        return new UserQuestionAnswerResource($userQuestionAnswer);
     }
 
     /**
@@ -80,6 +91,7 @@ class UserQuestionAnswerController extends Controller
      */
     public function destroy(UserQuestionAnswer $userQuestionAnswer)
     {
-        //
+        $userQuestionAnswer->delete();
+        return new UserQuestionAnswerResource($userQuestionAnswer);
     }
 }
